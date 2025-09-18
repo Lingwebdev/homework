@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Subject–Verb Agreement Practice</title>
+<style>
+  body{
+    margin:0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#ffecd2,#fcb69f,#a1c4fd,#c2e9fb);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+  }
+  @keyframes gradientBG {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  .container{display:grid;grid-template-columns:1fr 300px;gap:20px;padding:20px;}
+  main{background:rgba(255,255,255,0.9);border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,0.15);}
+  h1{color:#7e22ce;text-align:center;margin-bottom:20px;}
+  h2{color:#2563eb;margin-top:30px;}
+  .q{border-radius:12px;padding:12px;margin-bottom:12px;
+     background:linear-gradient(135deg,#d8b4fe,#fbcfe8);
+     box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+  .option{
+    padding:8px 14px;border-radius:10px;display:inline-block;
+    margin:6px;background:#f1f5f9;cursor:pointer;transition:all 0.25s;
+  }
+  .option:hover{transform:scale(1.05);background:#e0f2fe;}
+  .option.selected{background:#ffe4e6;}
+  .option.correct{background:#bbf7d0;}
+  .option.wrong{background:#fecaca;}
+  aside{
+    border-radius:16px;padding:20px;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.35);
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+    position:sticky;top:20px;height:fit-content;
+  }
+  .score{
+    font-size:2rem;font-weight:bold;color:#1d4ed8;
+    margin-bottom:15px;text-align:center;
+  }
+  button{
+    padding:12px;margin-top:8px;width:100%;
+    border:none;border-radius:10px;cursor:pointer;
+    font-size:1rem;font-weight:bold;transition:all 0.25s;
+  }
+  button.primary{background:linear-gradient(135deg,#4f46e5,#3b82f6);color:#fff;}
+  button.primary:hover{transform:scale(1.05);}
+  button.secondary{background:#f1f5f9;}
+  .play-btn{
+    margin-top:15px;
+    width:70px;height:70px;
+    border-radius:50%;border:none;cursor:pointer;
+    font-size:1.6rem;font-weight:bold;color:#fff;
+    background:radial-gradient(circle,#f97316,#f43f5e);
+    box-shadow:0 0 20px rgba(249,115,22,0.7);
+    transition:transform 0.3s;
+    display:block;margin-left:auto;margin-right:auto;
+  }
+  .play-btn:hover{transform:scale(1.1);}
+  .match-container{display:flex;gap:20px;margin-top:20px;}
+  .col{flex:1;}
+  .match-item{
+    padding:10px;margin:6px;border-radius:10px;
+    background:linear-gradient(135deg,#bfdbfe,#e0f2fe);
+    box-shadow:0 3px 6px rgba(0,0,0,0.1);
+    cursor:pointer;transition:all 0.25s;
+  }
+  .match-item:hover{transform:scale(1.05);}
+  .match-item.locked{opacity:0.6;}
+  svg{flex:1;}
+  svg path{stroke-width:4;fill:none;opacity:0.9;}
+</style>
+</head>
+<body>
+<div class="container">
+  <main>
+    <h1>🌸 Subject–Verb Agreement 🌸</h1>
+
+    <h2>Part A — Multiple Choice</h2>
+    <div id="mcq-list"></div>
+
+    <h2>Part B — Matching</h2>
+    <div class="match-container">
+      <div class="col" id="left-col"></div>
+      <svg id="svg-lines"></svg>
+      <div class="col" id="right-col"></div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="score" id="score-display">0 / 40</div>
+    <button class="primary" id="grade-btn">✨ Grade ✨</button>
+    <button class="secondary" id="reset-btn">🔄 Reset</button>
+    <button class="play-btn" id="play-btn">▶</button>
+    <audio id="bg-audio" loop>
+      <!-- Replace with your own "river_flow_in_you.mp3" -->
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+  </aside>
+</div>
+
+<script>
+// --- MCQs ---
+const mcqs=[
+  {q:"Neither the teacher nor the students ____ ready.",options:["is","are"],correct:1},
+  {q:"Each of the recipes ____ a photo.",options:["needs","need"],correct:0},
+  {q:"The number of mistakes ____ surprising.",options:["is","are"],correct:0},
+  {q:"The committee ____ divided.",options:["is","are"],correct:0},
+  {q:"Five miles ____ too far.",options:["is","are"],correct:0},
+  {q:"John, as well as his friends, ____ coming.",options:["is","are"],correct:0},
+  {q:"Both the dog and the cat ____ fed.",options:["has","have"],correct:1},
+  {q:"A bouquet of roses ____ on the table.",options:["lies","lie"],correct:0},
+  {q:"None of the students ____ finished.",options:["has","have"],correct:1},
+  {q:"My family ____ planning a trip.",options:["is","are"],correct:0},
+  {q:"Ten dollars ____ expensive.",options:["is","are"],correct:0},
+  {q:"The team ____ winning.",options:["is","are"],correct:0},
+  {q:"Either the manager or the employees ____ responsible.",options:["is","are"],correct:1},
+  {q:"The pair of shoes ____ new.",options:["is","are"],correct:0},
+  {q:"A series of articles ____ published.",options:["was","were"],correct:0},
+  {q:"Everybody ____ excited.",options:["is","are"],correct:0},
+  {q:"Here ____ the books.",options:["is","are"],correct:1},
+  {q:"Mathematics ____ my favorite subject.",options:["is","are"],correct:0},
+  {q:"The scissors ____ on the table.",options:["is","are"],correct:1},
+  {q:"Twenty percent of the cake ____ gone.",options:["is","are"],correct:0}
+];
+
+const mcqList=document.getElementById("mcq-list");
+mcqs.forEach((m,i)=>{
+  const div=document.createElement("div");div.className="q";
+  div.innerHTML=`<div><b>${i+1}.</b> ${m.q}</div>`;
+  m.options.forEach((o,j)=>{
+    const b=document.createElement("span");b.className="option";b.textContent=o;
+    b.onclick=()=>{m.selected=j;div.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");};
+    div.appendChild(b);
+  });
+  mcqList.appendChild(div);
+});
+
+// --- Matching ---
+const pairs=[
+ ["My list of chores","is long"],
+ ["The children","play every day"],
+ ["Either the teacher or the students","are responsible"],
+ ["The news","is surprising"],
+ ["A pair of jeans","is in the closet"],
+ ["Neither John nor Mary","has finished"],
+ ["Five miles","is a long distance"],
+ ["Some of the money","was missing"],
+ ["The jury","is ready"],
+ ["Both of the boxes","are heavy"],
+ ["Each of the answers","is correct"],
+ ["The flock of birds","was noisy"],
+ ["Ten dollars","is enough"],
+ ["The scissors","are sharp"],
+ ["My family","is supportive"],
+ ["That kind of bird","is rare"],
+ ["Most of the cookies","have disappeared"],
+ ["The committee","is divided"],
+ ["Everybody","is invited"],
+ ["A number of students","are absent"]
+];
+
+const leftCol=document.getElementById("left-col");
+const rightCol=document.getElementById("right-col");
+const svg=document.getElementById("svg-lines");
+
+const leftItems=pairs.map((p,i)=>({id:"L"+i,text:p[0]}));
+let rightItems=pairs.map((p,i)=>({id:"R"+i,text:p[1]})).sort(()=>Math.random()-0.5);
+
+const correctMap={};pairs.forEach((p,i)=>{correctMap["L"+i]="R"+i;});
+
+function render(){
+  leftCol.innerHTML="";rightCol.innerHTML="";
+  leftItems.forEach(l=>{
+    const d=document.createElement("div");d.className="match-item";d.textContent=l.text;d.dataset.id=l.id;d.onclick=()=>selectItem(d);leftCol.appendChild(d);
+  });
+  rightItems.forEach(r=>{
+    const d=document.createElement("div");d.className="match-item";d.textContent=r.text;d.dataset.id=r.id;d.onclick=()=>selectItem(d);rightCol.appendChild(d);
+  });
+}
+render();
+
+let first=null;let connections={};
+function selectItem(el){
+  if(el.classList.contains("locked"))return;
+  if(!first){first=el;el.classList.add("selected");}
+  else{
+    if(first.parentNode===el.parentNode){first.classList.remove("selected");first=el;el.classList.add("selected");return;}
+    const left=first.dataset.id.startsWith("L")?first:el;
+    const right=first.dataset.id.startsWith("R")?first:el;
+    connections[left.dataset.id]=right.dataset.id;
+    left.classList.add("locked");right.classList.add("locked");
+    left.classList.remove("selected");right.classList.remove("selected");first=null;drawLines();
+  }
+}
+function drawLines(){
+  svg.innerHTML="";
+  Object.keys(connections).forEach(lid=>{
+    const rid=connections[lid];
+    const lEl=document.querySelector(`[data-id=${lid}]`);
+    const rEl=document.querySelector(`[data-id=${rid}]`);
+    if(!lEl||!rEl)return;
+    const lRect=lEl.getBoundingClientRect(),rRect=rEl.getBoundingClientRect(),sRect=svg.getBoundingClientRect();
+    const x1=lRect.right-sRect.left,y1=(lRect.top+lRect.bottom)/2-sRect.top;
+    const x2=rRect.left-sRect.left,y2=(rRect.top+rRect.bottom)/2-sRect.top;
+    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d",`M${x1},${y1} C${x1+60},${y1} ${x2-60},${y2} ${x2},${y2}`);
+    path.dataset.lid=lid;path.setAttribute("stroke","#94a3b8");
+    svg.appendChild(path);
+  });
+}
+window.addEventListener("resize",drawLines);
+
+// --- Grade ---
+function grade(){
+  let score=0;
+  // MCQs
+  mcqs.forEach((m,i)=>{
+    const div=mcqList.children[i];
+    div.querySelectorAll(".option").forEach((o,j)=>{
+      o.classList.remove("correct","wrong");
+      if(j===m.correct)o.classList.add("correct");
+      if(m.selected===j){
+        if(m.selected===m.correct)score++;
+        else o.classList.add("wrong");
+      }
+    });
+  });
+  // Matching
+  Object.keys(correctMap).forEach(lid=>{
+    const rid=connections[lid];
+    const path=[...svg.querySelectorAll("path")].find(p=>p.dataset.lid===lid);
+    if(rid===correctMap[lid]){score++;if(path)path.setAttribute("stroke","blue");}
+    else if(rid){if(path)path.setAttribute("stroke","red");}
+    else {
+      // show correct line if not matched
+      const lEl=document.querySelector(`[data-id=${lid}]`);
+      const rEl=document.querySelector(`[data-id=${correctMap[lid]}]`);
+      if(lEl&&rEl){
+        const lRect=lEl.getBoundingClientRect(),rRect=rEl.getBoundingClientRect(),sRect=svg.getBoundingClientRect();
+        const x1=lRect.right-sRect.left,y1=(lRect.top+lRect.bottom)/2-sRect.top;
+        const x2=rRect.left-sRect.left,y2=(rRect.top+rRect.bottom)/2-sRect.top;
+        const newPath=document.createElementNS("http://www.w3.org/2000/svg","path");
+        newPath.setAttribute("d",`M${x1},${y1} C${x1+60},${y1} ${x2-60},${y2} ${x2},${y2}`);
+        newPath.setAttribute("stroke","green");svg.appendChild(newPath);
+      }
+    }
+  });
+  document.getElementById("score-display").textContent=score+" / 40";
+}
+document.getElementById("grade-btn").onclick=grade;
+document.getElementById("reset-btn").onclick=()=>location.reload();
+
+// --- Audio ---
+const audio=document.getElementById("bg-audio");
+const btn=document.getElementById("play-btn");
+btn.onclick=()=>{
+  if(audio.paused){
+    audio.play().catch(e=>alert("Audio play blocked: "+e));
+    btn.textContent="⏸";
+  }else{audio.pause();btn.textContent="▶";}
+};
+</script>
+</body>
+</html>
